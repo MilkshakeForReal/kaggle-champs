@@ -91,7 +91,7 @@ class KaggleMolDataset(object):
                  label_filepath = C.RAW_DATA_PATH,
                  store_path = C.PROC_DATA_PATH ,
                  mode='train', 
-                 from_raw=False,
+                 from_raw=True,
                  mol_to_graph = mol_to_bigraph,
                  atom_featurizer=CanonicalAtomFeaturizer,
                  bond_featurizer=bond_featurizer):
@@ -161,7 +161,6 @@ class KaggleMolDataset(object):
             with open(osp.join(self.store_path, "%s_labels.pkl" % self.mode), "wb") as f:
                pickle.dump(self.labels, f)
 
-        self.set_mean_and_std()
         print(len(self.graphs), "loaded!")
 
     def __getitem__(self, item):
@@ -190,20 +189,3 @@ class KaggleMolDataset(object):
             Length of Dataset
         """
         return len(self.graphs)
-
-    def set_mean_and_std(self, mean=None, std=None):
-        """Set mean and std or compute from labels for future normalization.
-        Parameters
-        ----------
-        mean : int or float
-            Default to be None.
-        std : int or float
-            Default to be None.
-        """
-        labels = np.array([i.values for i in self.labels])
-        if mean is None:
-            mean = np.mean(labels, axis=0)
-        if std is None:
-            std = np.std(labels, axis=0)
-        self.mean = mean
-        self.std = std
