@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from dgl.data.chem.utils import mol_to_complete_graph, CanonicalBondFeaturizer,\
+from dgl.data.chem.utils import mol_to_complete_graph,\
                                 CanonicalAtomFeaturizer
 import torch
 from rdkit import Chem
