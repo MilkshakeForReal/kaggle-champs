@@ -137,8 +137,8 @@ class KaggleMolDataset(object):
                     print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
                     mol, xyz, dist_matrix = mol_from_xyz(self.file_list[i])
                 
-                    graph = mol_to_graph(mol, atom_featurizer,
-                                        bond_featurizer)  
+                    graph = mol_to_graph(mol, atom_featurizer=atom_featurizer,
+                                        bond_featurizer=atom_featurizer)  
                     graph.gdata = {}              
                     smiles = Chem.MolToSmiles(mol)
                     graph.gdata['smile'] = smiles    
