@@ -79,7 +79,7 @@ def bond_featurizer(mol, self_loop=True):
 
     bond_feats_dict['e_feat'] = torch.tensor(
         np.array(bond_feats_dict['e_feat']).astype(np.float32))
-    bond_feats_dict['distance'] = F.tensor(
+    bond_feats_dict['distance'] = torch.tensor(
         np.array(bond_feats_dict['distance']).astype(np.float32)).reshape(-1 , 1)
 
     return bond_feats_dict
