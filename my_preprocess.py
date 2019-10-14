@@ -113,7 +113,6 @@ class KaggleMolDataset(object):
         self.file_list = file_list
         self.store_path = store_path
         self.label_filepath = label_filepath
-        
         self._load(mol_to_graph, atom_featurizer, bond_featurizer)
 
     def _load(self, mol_to_graph, atom_featurizer, bond_featurizer):
@@ -136,9 +135,9 @@ class KaggleMolDataset(object):
                 if mol_name in mol_names:
                     cnt += 1
                     print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
-                    mol, xyz, dist_matrix = mol_from_xyz(self.file_path[i])
+                    mol, xyz, dist_matrix = mol_from_xyz(self.file_list[i])
                 
-                    graph = self.mol_to_graph(mol, atom_featurizer,
+                    graph = mol_to_graph(mol, atom_featurizer,
                                         bond_featurizer)  
                     graph.gdata = {}              
                     smiles = Chem.MolToSmiles(mol)
