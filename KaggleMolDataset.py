@@ -154,7 +154,7 @@ class KaggleMolDataset(object):
                                                                     )
                     self.labels.append(label)
 
-            with open(osp.join(self.store_path, "%s_grapgs.pkl" % self.mode), "wb") as f:
+            with open(osp.join(self.store_path, "%s_graphs.pkl" % self.mode), "wb") as f:
                 pickle.dump(self.graphs, f)
             with open(osp.join(self.store_path, "%s_labels.pkl" % self.mode), "wb") as f:
                pickle.dump(self.labels, f)
