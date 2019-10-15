@@ -8,7 +8,7 @@ import torch
 from rdkit import Chem
 from rdkit.Chem import ChemicalFeatures, rdmolops
 from rdkit import RDConfig
-
+import os.path as osp
 from glob import glob
 
 from xyz2mol import read_xyz_file, xyz2mol
