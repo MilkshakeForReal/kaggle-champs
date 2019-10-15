@@ -90,7 +90,7 @@ class KaggleMolDataset(object):
                  label_filepath = C.RAW_DATA_PATH,
                  store_path = C.PROC_DATA_PATH ,
                  mode='train', 
-                 from_raw=True,
+                 from_raw=False,
                  mol_to_graph = mol_to_bigraph,
                  atom_featurizer=CanonicalAtomFeaturizer,
                  bond_featurizer=bond_featurizer):
@@ -116,11 +116,10 @@ class KaggleMolDataset(object):
 
     def _load(self, mol_to_graph, atom_featurizer, bond_featurizer):
         if not self.from_raw:
-            pass
-        #    with open(osp.join(self.file_dir, "%s_graphs.pkl" % self.mode), "rb") as f:
-        #        self.graphs = pickle.load(f)
-        #    with open(osp.join(self.file_dir, "%s_labels.pkl" % self.mode), "rb") as f:
-        #        self.labels = pickle.load(f)
+            with open(osp.join(self.store_path, "%s_graphs.pkl" % self.mode), "rb") as f:
+                self.graphs = pickle.load(f)
+            with open(osp.join(self.store_path, "%s_labels.pkl" % self.mode), "rb") as f:
+                self.labels = pickle.load(f)
         else:
             print('Start preprocessing dataset...')
             labels  = pd.read_csv(self.label_filepath +self.mode + '.csv')
