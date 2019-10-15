@@ -133,7 +133,8 @@ class KaggleMolDataset(object):
                 mol_name = self.file_list[i].split('/')[-1][:-4] 
                 if mol_name in mol_names:
                     cnt += 1
-                    print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
+                    if cnt %10 ==0:
+                        print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
                     mol, xyz, dist_matrix = mol_from_xyz(C.RAW_DATA_PATH + \
                                                          'structures/' +\
                                                          self.file_list[i])
