@@ -135,15 +135,15 @@ class KaggleMolDataset(object):
                     cnt += 1
                     print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
                     mol, xyz, dist_matrix = mol_from_xyz(self.file_list[i])
-                
-                    graph = mol_to_graph(mol, atom_featurizer=atom_featurizer,
-                                        bond_featurizer=atom_featurizer)  
-                    graph.gdata = {}              
+                    
+                    graph = mol_to_graph(mol, bond_featurizer=bond_featurizer)  
+                    graph.gdata = {}    
+                    print(graph)
                     smiles = Chem.MolToSmiles(mol)
-                    graph.gdata['smile'] = smiles    
-                    g.gdata['mol_name'] = mol_name 
+                    graph.gdata['smiles'] = smiles    
+                    graph.gdata['mol_name'] = mol_name 
 
-                    g.ndata['h'] = torch.stack([g.ndata['h'], xyz], axis = 1)
+                    graph.ndata['h'] = torch.stack([graph.ndata['h'], xyz], axis = 1)
                     self.graphs.append(graph)
                     label = labels[labels['molecule_name'] ==mol_name ].drop([
                                                                         'molecule_name', 
