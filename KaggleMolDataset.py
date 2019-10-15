@@ -4,12 +4,14 @@ import pickle
 
 from dgl.data.chem.utils import mol_to_bigraph,\
                                 CanonicalAtomFeaturizer
+from dgl import DGLGraph
 import torch
 from rdkit import Chem
 from rdkit.Chem import ChemicalFeatures, rdmolops
 from rdkit import RDConfig
 import os.path as osp
 from glob import glob
+from functools import partial
 from collections import defaultdict
 from xyz2mol import read_xyz_file, xyz2mol
 import constants as C
@@ -63,6 +65,52 @@ def my_mol_to_graph(mol, graph_constructor, atom_featurizer, bond_featurizer):
 
     if bond_featurizer is not None:
         g.edata.update(bond_featurizer(mol))
+
+    return g
+
+
+def construct_bigraph_from_mol(mol, add_self_loop=False):
+    """Construct a bi-directed DGLGraph with topology only for the molecule.
+    The **i** th atom in the molecule, i.e. ``mol.GetAtomWithIdx(i)``, corresponds to the
+    **i** th node in the returned DGLGraph.
+    The **i** th bond in the molecule, i.e. ``mol.GetBondWithIdx(i)``, corresponds to the
+    **(2i)**-th and **(2i+1)**-th edges in the returned DGLGraph. The **(2i)**-th and
+    **(2i+1)**-th edges will be separately from **u** to **v** and **v** to **u**, where
+    **u** is ``bond.GetBeginAtomIdx()`` and **v** is ``bond.GetEndAtomIdx()``.
+    If self loops are added, the last **n** edges will separately be self loops for
+    atoms ``0, 1, ..., n-1``.
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.Mol
+        RDKit molecule holder
+    add_self_loop : bool
+        Whether to add self loops in DGLGraphs.
+    Returns
+    -------
+    g : DGLGraph
+        Empty bigraph topology of the molecule
+    """
+    g = DGLGraph()
+
+    # Add nodes
+    num_atoms = mol.GetNumAtoms()
+    g.add_nodes(num_atoms)
+
+    # Add edges
+    src_list = []
+    dst_list = []
+    num_bonds = mol.GetNumBonds()
+    for i in range(num_bonds):
+        bond = mol.GetBondWithIdx(i)
+        u = bond.GetBeginAtomIdx()
+        v = bond.GetEndAtomIdx()
+        src_list.extend([u, v])
+        dst_list.extend([v, u])
+    g.add_edges(src_list, dst_list)
+
+    if add_self_loop:
+        nodes = g.nodes()
+        g.add_edges(nodes, nodes)
 
     return g
 
