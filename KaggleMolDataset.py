@@ -121,8 +121,9 @@ class KaggleMolDataset(object):
             with open(osp.join(self.store_path, "%s_labels.pkl" % self.mode), "rb") as f:
                 self.labels = pickle.load(f)
         else:
-            print('Start preprocessing dataset...')
-            labels  = pd.read_csv(self.label_filepath +self.mode + '.csv')
+            print('Start loading target file')
+            labels = pd.read_csv(self.label_filepath + self.mode + '.csv')
+            print('Target file loaded!')
             cnt = 0
             dataset_size = len(labels['molecule_name'].unique())
             mol_names = labels['molecule_name'].unique()
