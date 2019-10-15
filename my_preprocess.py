@@ -15,7 +15,7 @@ from xyz2mol import read_xyz_file, xyz2mol
 import constants as C
 
 
-xyz_filepath_list = list(glob(C.RAW_DATA_PATH + 'structures/*.xyz'))
+xyz_filepath_list = list(glob(C.RAW_DATA_PATH + 'structures' + 'structures/*.xyz'))
 xyz_filepath_list.sort()
 
 
@@ -87,7 +87,7 @@ def bond_featurizer(mol, self_loop=True):
 class KaggleMolDataset(object):
     def __init__(self, 
                  file_list = xyz_filepath_list,
-                 label_filepath = C.RAW_DATA_PATH+'structures',
+                 label_filepath = C.RAW_DATA_PATH,
                  store_path = C.PROC_DATA_PATH ,
                  mode='train', 
                  from_raw=True,
