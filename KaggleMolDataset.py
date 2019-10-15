@@ -10,7 +10,7 @@ from rdkit.Chem import ChemicalFeatures, rdmolops
 from rdkit import RDConfig
 import os.path as osp
 from glob import glob
-
+from collections import defaultdict
 from xyz2mol import read_xyz_file, xyz2mol
 import constants as C
 
