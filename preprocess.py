@@ -31,8 +31,8 @@ from utils import print_progress
 import constants as C
 
 
-mol_feat_columns = ['ave_bond_length', 'std_bond_length', 'ave_atom_weight']
-xyz_filepath_list = list(glob(C.RAW_DATA_PATH + 'structures/*.xyz'))
+#mol_feat_columns = ['ave_bond_length', 'std_bond_length', 'ave_atom_weight']
+xyz_filepath_list = os.listdir(C.RAW_DATA_PATH + 'structures')
 xyz_filepath_list.sort()
 
 
