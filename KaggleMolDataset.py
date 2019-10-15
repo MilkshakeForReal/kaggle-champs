@@ -121,7 +121,7 @@ class KaggleMolDataset(object):
             with open(osp.join(self.store_path, "%s_labels.pkl" % self.mode), "rb") as f:
                 self.labels = pickle.load(f)
         else:
-            print('Start loading target file')
+            print('Start loading target file...')
             labels = pd.read_csv(self.label_filepath + self.mode + '.csv')
             print('Target file loaded!')
             cnt = 0
