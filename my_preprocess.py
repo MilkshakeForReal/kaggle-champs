@@ -35,7 +35,6 @@ def mol_from_xyz(filepath, add_hs=True, compute_dist_centre=False):
 
     return mol, np.array(xyz_coordinates), dMat
 
-
 def bond_featurizer(mol, self_loop=True):
     """Featurization for all bonds in a molecule.
     The bond indices will be preserved.
@@ -64,7 +63,7 @@ def bond_featurizer(mol, self_loop=True):
 
             e_uv = mol.GetBondBetweenAtoms(u, v)
             if e_uv is None:
-                bond_type = None
+                continue
             else:
                 bond_type = e_uv.GetBondType()
             bond_feats_dict['e_feat'].append([
@@ -72,7 +71,7 @@ def bond_featurizer(mol, self_loop=True):
                 for x in (Chem.rdchem.BondType.SINGLE,
                           Chem.rdchem.BondType.DOUBLE,
                           Chem.rdchem.BondType.TRIPLE,
-                          Chem.rdchem.BondType.AROMATIC, None)
+                          Chem.rdchem.BondType.AROMATIC)
             ])
             bond_feats_dict['distance'].append(
                 np.linalg.norm(geom[u] - geom[v]))
