@@ -35,6 +35,62 @@ def mol_from_xyz(filepath, add_hs=True, compute_dist_centre=False):
 
     return mol, np.array(xyz_coordinates), dMat
 
+def my_mol_to_graph(mol, graph_constructor, atom_featurizer, bond_featurizer):
+    """Convert an RDKit molecule object into a DGLGraph and featurize for it.
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.Mol
+        RDKit molecule holder
+    graph_constructor : callable
+        Takes an RDKit molecule as input and returns a DGLGraph
+    atom_featurizer : callable, rdkit.Chem.rdchem.Mol -> dict
+        Featurization for atoms in a molecule, which can be used to update
+        ndata for a DGLGraph.
+    bond_featurizer : callable, rdkit.Chem.rdchem.Mol -> dict
+        Featurization for bonds in a molecule, which can be used to update
+        edata for a DGLGraph.
+    Returns
+    -------
+    g : DGLGraph
+        Converted DGLGraph for the molecule
+    """
+    #new_order = rdmolfiles.CanonicalRankAtoms(mol)
+    #mol = rdmolops.RenumberAtoms(mol, new_order)
+    g = graph_constructor(mol)
+
+    if atom_featurizer is not None:
+        g.ndata.update(atom_featurizer(mol))
+
+    if bond_featurizer is not None:
+        g.edata.update(bond_featurizer(mol))
+
+    return g
+
+
+def my_mol_to_bigraph(mol, add_self_loop=False,
+                   atom_featurizer=CanonicalAtomFeaturizer(),
+                   bond_featurizer=None):
+    """Convert an RDKit molecule object into a bi-directed DGLGraph and featurize for it.
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.Mol
+        RDKit molecule holder
+    add_self_loop : bool
+        Whether to add self loops in DGLGraphs.
+    atom_featurizer : callable, rdkit.Chem.rdchem.Mol -> dict
+        Featurization for atoms in a molecule, which can be used to update
+        ndata for a DGLGraph. Default to CanonicalAtomFeaturizer().
+    bond_featurizer : callable, rdkit.Chem.rdchem.Mol -> dict
+        Featurization for bonds in a molecule, which can be used to update
+        edata for a DGLGraph.
+    Returns
+    -------
+    g : DGLGraph
+        Bi-directed DGLGraph for the molecule
+    """
+    return my_mol_to_graph(mol, partial(construct_bigraph_from_mol, add_self_loop=add_self_loop),
+                        atom_featurizer, bond_featurizer)
+  
 def bond_featurizer(mol, self_loop=True):
     """Featurization for all bonds in a molecule.
     The bond indices will be preserved.
@@ -91,7 +147,7 @@ class KaggleMolDataset(object):
                  store_path = C.PROC_DATA_PATH ,
                  mode='train', 
                  from_raw=False,
-                 mol_to_graph = mol_to_bigraph,
+                 mol_to_graph = my_mol_to_bigraph,
                  atom_featurizer=CanonicalAtomFeaturizer,
                  bond_featurizer=bond_featurizer):
 
@@ -112,6 +168,8 @@ class KaggleMolDataset(object):
         self.file_list = file_list
         self.store_path = store_path
         self.label_filepath = label_filepath
+        self.mol_to_graph = mol_to_graph
+        
         self._load(mol_to_graph, atom_featurizer, bond_featurizer)
 
     def _load(self, mol_to_graph, atom_featurizer, bond_featurizer):
@@ -135,7 +193,7 @@ class KaggleMolDataset(object):
                     cnt += 1
                     if cnt %10 ==0:
                         print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
-                    mol, xyz, dist_matrix = mol_from_xyz(C.RAW_DATA_PATH + \
+                    mol, xyz, dist_matrix = self.mol_from_xyz(C.RAW_DATA_PATH + \
                                                          'structures/' +\
                                                          self.file_list[i])
                     graph = mol_to_graph(mol, bond_featurizer=bond_featurizer)  
