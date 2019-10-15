@@ -87,7 +87,7 @@ def bond_featurizer(mol, self_loop=True):
 class KaggleMolDataset(object):
     def __init__(self, 
                  file_list = xyz_filepath_list,
-                 label_filepath = C.RAW_DATA_PATH,
+                 label_filepath = C.RAW_DATA_PATH+'structures',
                  store_path = C.PROC_DATA_PATH ,
                  mode='train', 
                  from_raw=True,
