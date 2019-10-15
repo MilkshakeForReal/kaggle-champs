@@ -137,7 +137,6 @@ class KaggleMolDataset(object):
                     
                     graph = mol_to_graph(mol, bond_featurizer=bond_featurizer)  
                     graph.gdata = {}    
-                    print(graph)
                     smiles = Chem.MolToSmiles(mol)
                     graph.gdata['smiles'] = smiles    
                     graph.gdata['mol_name'] = mol_name 
