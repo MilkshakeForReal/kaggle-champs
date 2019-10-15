@@ -134,8 +134,9 @@ class KaggleMolDataset(object):
                 if mol_name in mol_names:
                     cnt += 1
                     print('Processing molecule {:d}/{:d}'.format(cnt, dataset_size))
-                    mol, xyz, dist_matrix = mol_from_xyz(self.file_list[i])
-                    
+                    mol, xyz, dist_matrix = mol_from_xyz(C.RAW_DATA_PATH + \
+                                                         'structures/' +\
+                                                         self.file_list[i])
                     graph = mol_to_graph(mol, bond_featurizer=bond_featurizer)  
                     graph.gdata = {}    
                     smiles = Chem.MolToSmiles(mol)
