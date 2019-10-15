@@ -244,6 +244,7 @@ class KaggleMolDataset(object):
                     mol, xyz, dist_matrix = self.mol_from_xyz(C.RAW_DATA_PATH + \
                                                          'structures/' +\
                                                          self.file_list[i])
+                    Chem.SanitizeMol(Mol)
                     graph = mol_to_graph(mol, bond_featurizer=bond_featurizer)  
                     graph.gdata = {}    
                     smiles = Chem.MolToSmiles(mol)
@@ -261,7 +262,7 @@ class KaggleMolDataset(object):
                                                                          axis = 1
                                                                     )
                     self.labels.append(label)
-
+            os.makedir.(os.dirname(self.store_path), exit_o=True)
             with open(osp.join(self.store_path, "%s_graphs.pkl" % self.mode), "wb") as f:
                 pickle.dump(self.graphs, f)
             with open(osp.join(self.store_path, "%s_labels.pkl" % self.mode), "wb") as f:
