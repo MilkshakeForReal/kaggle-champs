@@ -143,7 +143,7 @@ class KaggleMolDataset(object):
                     graph.gdata['smiles'] = smiles    
                     graph.gdata['mol_name'] = mol_name 
 
-                    graph.ndata['h'] = torch.stack([graph.ndata['h'], torch.tensor(xyz).float()],
+                    graph.ndata['h'] = torch.cat([graph.ndata['h'], torch.tensor(xyz).float()],
                                                   dim = 1)
                     self.graphs.append(graph)
                     label = labels[labels['molecule_name'] ==mol_name ].drop([
